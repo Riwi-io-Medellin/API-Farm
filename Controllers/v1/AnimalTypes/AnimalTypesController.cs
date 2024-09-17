@@ -47,6 +47,17 @@ public class AnimalTypesController : ControllerBase
         return Ok(animalType);
     }
 
+    [HttpGet("search/{keyword}")]
+    public async Task<IActionResult> SearchByKeyword([FromRoute] string keyword)
+    {
+        var animalTypes = await Context.AnimalTypes.Where(p => p.Name.Contains(keyword) || p.Description.Contains(keyword)).ToListAsync();
+        if (animalTypes.Any() == false)
+        {
+            return NoContent();
+        }
+        return Ok(animalTypes);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AnimalType newAnimalType){
         if (ModelState.IsValid == false)
