@@ -36,4 +36,39 @@ public class AnimalTypesController : ControllerBase
         return Ok(animalTypes);
     }
 
+
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] AnimalType newAnimalType){
+        if (ModelState.IsValid == false)
+        {
+            return BadRequest(ModelState);
+        }
+        Context.AnimalTypes.Add(newAnimalType);
+        await Context.SaveChangesAsync();
+        return Ok("created");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
