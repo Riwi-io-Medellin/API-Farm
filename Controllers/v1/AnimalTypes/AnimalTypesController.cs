@@ -90,6 +90,20 @@ public class AnimalTypesController : ControllerBase
     }
 
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var animalType = checkExistence(id);
+        if (animalType == false)
+        {
+            return NoContent();
+        }
+        Context.AnimalTypes.Remove(await Context.AnimalTypes.FindAsync(id));
+        await Context.SaveChangesAsync();
+        return Ok("deleted");
+    }
+
+
     private bool checkExistence(int id)
     {
         return Context.AnimalTypes.Any(p => p.Id == id);
