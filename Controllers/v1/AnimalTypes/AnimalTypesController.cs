@@ -109,24 +109,4 @@ public class AnimalTypesController : ControllerBase
         return Context.AnimalTypes.Any(p => p.Id == id);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
