@@ -59,7 +59,8 @@ public class AnimalTypesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AnimalType newAnimalType){
+    public async Task<IActionResult> Create([FromBody] AnimalType newAnimalType)
+    {
         if (ModelState.IsValid == false)
         {
             return BadRequest(ModelState);
@@ -72,22 +73,26 @@ public class AnimalTypesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnimalType updatedAnimalType)
     {
+        var animalType = checkExistence(id);
+        if (animalType == false)
+        {
+            return NoContent();
+        }
+        updatedAnimalType.Id = id;
         if (ModelState.IsValid == false)
         {
             return BadRequest(ModelState);
         }
 
-        var animalType = await Context.AnimalTypes.FindAsync(id);
-        if (animalType == null)
-        {
-            return NotFound();
-        }
-
-        animalType.Name = updatedAnimalType.Name;
-        animalType.Description = updatedAnimalType.Description;
-        
+        Context.Entry(updatedAnimalType).State = EntityState.Modified;
         await Context.SaveChangesAsync();
         return Ok("updated");
+    }
+
+
+    private bool checkExistence(int id)
+    {
+        return Context.AnimalTypes.Any(p => p.Id == id);
     }
 
 
