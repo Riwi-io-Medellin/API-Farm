@@ -15,5 +15,6 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         AnimalTypeSeeder.Seed(modelBuilder);
+        AnimalSeeder.Seed(modelBuilder,500);
     }
 }
