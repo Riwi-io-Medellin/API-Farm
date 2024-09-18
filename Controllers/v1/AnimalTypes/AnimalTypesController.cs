@@ -69,7 +69,26 @@ public class AnimalTypesController : ControllerBase
         return Ok("created");
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnimalType updatedAnimalType)
+    {
+        if (ModelState.IsValid == false)
+        {
+            return BadRequest(ModelState);
+        }
 
+        var animalType = await Context.AnimalTypes.FindAsync(id);
+        if (animalType == null)
+        {
+            return NotFound();
+        }
+
+        animalType.Name = updatedAnimalType.Name;
+        animalType.Description = updatedAnimalType.Description;
+        
+        await Context.SaveChangesAsync();
+        return Ok("updated");
+    }
 
 
 
