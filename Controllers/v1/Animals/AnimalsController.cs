@@ -8,6 +8,7 @@ namespace API_Farm.Controllers.v1.Animals
 {
     [ApiController]
     [Route("api/v1/[controller]")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class AnimalsController : ControllerBase
     {
         private readonly ApplicationDbContext Context;
@@ -47,12 +48,13 @@ namespace API_Farm.Controllers.v1.Animals
             return Ok(animal);
         }
 
+
         [HttpGet("search/{keyword}")]
         public async Task<IActionResult> SearchByKeyword([FromRoute] string keyword)
         {
             var animals = await Context.Animals
                                 .Where
-                                (p => p.Name.Contains(keyword) || 
+                                (p => p.Name.Contains(keyword) ||
                                 p.Description.Contains(keyword) ||
                                 p.WeightKg.ToString().Contains(keyword)
                                 ).ToListAsync();
@@ -63,55 +65,7 @@ namespace API_Farm.Controllers.v1.Animals
             return Ok(animals);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Animal newanimal)
-        {
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest(ModelState);
-            }
-            Context.Animals.Add(newanimal);
-            await Context.SaveChangesAsync();
-            return Ok("created");
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Animal updatedanimal)
-        {
-            var animal = checkExistence(id);
-            if (animal == false)
-            {
-                return NoContent();
-            }
-            updatedanimal.Id = id;
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Context.Entry(updatedanimal).State = EntityState.Modified;
-            await Context.SaveChangesAsync();
-            return Ok("updated");
-        }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
-        {
-            var animal = checkExistence(id);
-            if (animal == false)
-            {
-                return NoContent();
-            }
-            Context.Animals.Remove(await Context.Animals.FindAsync(id));
-            await Context.SaveChangesAsync();
-            return Ok("deleted");
-        }
-
-
-        private bool checkExistence(int id)
-        {
-            return Context.Animals.Any(p => p.Id == id);
-        }
     }
 }

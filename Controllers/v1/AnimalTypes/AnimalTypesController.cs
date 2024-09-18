@@ -8,6 +8,7 @@ namespace API_Farm.Controllers.v1.AnimalTypes;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[ApiExplorerSettings(GroupName = "v1")]
 public class AnimalTypesController : ControllerBase
 {
     private readonly ApplicationDbContext Context;
@@ -56,57 +57,6 @@ public class AnimalTypesController : ControllerBase
             return NoContent();
         }
         return Ok(animalTypes);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AnimalType newAnimalType)
-    {
-        if (ModelState.IsValid == false)
-        {
-            return BadRequest(ModelState);
-        }
-        Context.AnimalTypes.Add(newAnimalType);
-        await Context.SaveChangesAsync();
-        return Ok("created");
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnimalType updatedAnimalType)
-    {
-        var animalType = checkExistence(id);
-        if (animalType == false)
-        {
-            return NoContent();
-        }
-        updatedAnimalType.Id = id;
-        if (ModelState.IsValid == false)
-        {
-            return BadRequest(ModelState);
-        }
-
-        Context.Entry(updatedAnimalType).State = EntityState.Modified;
-        await Context.SaveChangesAsync();
-        return Ok("updated");
-    }
-
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
-    {
-        var animalType = checkExistence(id);
-        if (animalType == false)
-        {
-            return NoContent();
-        }
-        Context.AnimalTypes.Remove(await Context.AnimalTypes.FindAsync(id));
-        await Context.SaveChangesAsync();
-        return Ok("deleted");
-    }
-
-
-    private bool checkExistence(int id)
-    {
-        return Context.AnimalTypes.Any(p => p.Id == id);
     }
 
 }

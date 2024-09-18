@@ -25,6 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Farm", Version = "v1" });
+        c.SwaggerDoc("v2", new OpenApiInfo { Title = "API Farm", Version = "v2" });
         // Customize Swagger UI settings here.
         c.EnableAnnotations();
     }
@@ -36,7 +37,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(
+        options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Version 1");
+            options.SwaggerEndpoint("/swagger/v2/swagger.json", "Version 2");
+        }
+    );
 }
 
 app.UseHttpsRedirection();
